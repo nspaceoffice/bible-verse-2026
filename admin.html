@@ -245,8 +245,10 @@
                 return;
             }
 
-            const container = document.getElementById('data-container');
-            container.innerHTML = '<div class="loading">데이터 로딩 중...</div>';
+            // 로딩 표시
+            document.getElementById('today-count').textContent = '...';
+            document.getElementById('total-count').textContent = '...';
+            document.getElementById('today-participants').textContent = '...';
 
             // 기존 스크립트 제거
             const oldScript = document.getElementById('jsonp-script');
@@ -257,7 +259,10 @@
                 if (data.success) {
                     displayData(data);
                 } else {
-                    container.innerHTML = '<div class="no-data">데이터를 불러올 수 없습니다: ' + (data.error || '') + '</div>';
+                    alert('데이터를 불러올 수 없습니다: ' + (data.error || ''));
+                    document.getElementById('today-count').textContent = '-';
+                    document.getElementById('total-count').textContent = '-';
+                    document.getElementById('today-participants').textContent = '-';
                 }
             };
 
@@ -266,7 +271,10 @@
             script.id = 'jsonp-script';
             script.src = url + '?action=getData&callback=handleData';
             script.onerror = function() {
-                container.innerHTML = '<div class="no-data">데이터 로드 실패. URL을 확인하세요.</div>';
+                alert('데이터 로드 실패. URL을 확인하세요.');
+                document.getElementById('today-count').textContent = '-';
+                document.getElementById('total-count').textContent = '-';
+                document.getElementById('today-participants').textContent = '-';
             };
             document.body.appendChild(script);
         }
