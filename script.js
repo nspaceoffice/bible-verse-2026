@@ -158,7 +158,10 @@ const resultScreen = document.getElementById('result-screen');
 const startBtn = document.getElementById('start-btn');
 const retryBtn = document.getElementById('retry-btn');
 const saveImageBtn = document.getElementById('save-image-btn');
-const shareUrlBtn = document.getElementById('share-url-btn');
+const shareKakaoBtn = document.getElementById('share-kakao');
+const shareFacebookBtn = document.getElementById('share-facebook');
+const shareInstagramBtn = document.getElementById('share-instagram');
+const shareCopyBtn = document.getElementById('share-copy');
 const verseText = document.getElementById('verse-text');
 const verseRef = document.getElementById('verse-ref');
 const blessingMessage = document.getElementById('blessing-message');
@@ -322,29 +325,77 @@ async function saveAsImage() {
     }
 }
 
-// URL 공유하기 (친구에게 보내기)
-async function shareUrl() {
-    const shareText = `2026년 성경말씀 뽑기\n나도 말씀 뽑아보기!`;
+// 카카오톡 공유
+function shareKakao() {
     const shareUrl = window.location.href;
+    const text = `2026년 성경말씀 뽑기 - 나도 말씀 뽑아보기!`;
 
-    // Web Share API 지원 확인
-    if (navigator.share) {
-        try {
-            await navigator.share({
-                title: '2026 성경말씀 뽑기',
-                text: shareText,
-                url: shareUrl
-            });
-        } catch (err) {
-            if (err.name !== 'AbortError') {
-                // 공유 취소가 아닌 경우 URL 복사로 대체
-                copyToClipboard(shareUrl);
+    // 카카오톡 공유 URL (모바일/PC 모두 지원)
+    const kakaoShareUrl = `https://story.kakao.com/share?url=${encodeURIComponent(shareUrl)}`;
+
+    // 모바일인 경우 카카오톡 앱으로 연결 시도
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        // 카카오톡 앱 URL scheme
+        const kakaoAppUrl = `kakaolink://send?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+
+        // 앱 열기 시도 후 실패하면 웹으로 폴백
+        const timeout = setTimeout(() => {
+            window.open(kakaoShareUrl, '_blank');
+        }, 1500);
+
+        window.location.href = kakaoAppUrl;
+
+        // 페이지가 숨겨지면 앱이 열린 것
+        document.addEventListener('visibilitychange', function handler() {
+            if (document.hidden) {
+                clearTimeout(timeout);
+                document.removeEventListener('visibilitychange', handler);
             }
-        }
+        });
     } else {
-        // Web Share API 미지원 시 클립보드 복사
-        copyToClipboard(shareUrl);
+        window.open(kakaoShareUrl, '_blank', 'width=600,height=400');
     }
+
+    showToast('카카오톡으로 공유합니다!');
+}
+
+// 페이스북 공유
+function shareFacebook() {
+    const shareUrl = window.location.href;
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    window.open(facebookUrl, '_blank', 'width=600,height=400');
+    showToast('페이스북으로 공유합니다!');
+}
+
+// 인스타그램 공유 (이미지 저장 후 인스타그램 앱으로 이동)
+function shareInstagram() {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        // 먼저 이미지를 저장하도록 안내
+        showToast('이미지를 저장한 후 인스타그램 DM에서 공유하세요!');
+
+        // 이미지 저장 실행
+        setTimeout(() => {
+            saveAsImage();
+        }, 500);
+
+        // 인스타그램 앱 열기
+        setTimeout(() => {
+            window.location.href = 'instagram://direct-inbox';
+        }, 2000);
+    } else {
+        // PC에서는 이미지 저장 안내
+        showToast('이미지를 저장한 후 인스타그램에서 공유하세요!');
+        saveAsImage();
+    }
+}
+
+// 링크 복사
+function shareCopyLink() {
+    copyToClipboard(window.location.href);
 }
 
 // 클립보드 복사
@@ -376,7 +427,10 @@ function handleEnterKey(e) {
 startBtn.addEventListener('click', pickVerse);
 retryBtn.addEventListener('click', retry);
 saveImageBtn.addEventListener('click', saveAsImage);
-shareUrlBtn.addEventListener('click', shareUrl);
+shareKakaoBtn.addEventListener('click', shareKakao);
+shareFacebookBtn.addEventListener('click', shareFacebook);
+shareInstagramBtn.addEventListener('click', shareInstagram);
+shareCopyBtn.addEventListener('click', shareCopyLink);
 userNameInput.addEventListener('keypress', handleEnterKey);
 
 // 페이지 로드 시 초기화

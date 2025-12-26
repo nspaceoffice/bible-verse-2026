@@ -498,6 +498,65 @@ html, body {
     gap: 12px;
     justify-content: center;
     flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+/* Share Section */
+.share-section {
+    border-top: 1px solid rgba(139, 69, 19, 0.1);
+    padding-top: 24px;
+}
+
+.share-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.share-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.share-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: #fff;
+}
+
+.share-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.share-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.share-btn.kakao {
+    background: #FEE500;
+    color: #3C1E1E;
+}
+
+.share-btn.facebook {
+    background: #1877F2;
+}
+
+.share-btn.instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.share-btn.copy {
+    background: var(--primary-color);
 }
 
 /* Toast */
