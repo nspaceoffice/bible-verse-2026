@@ -219,33 +219,23 @@ function shareFacebook() {
     showToast('페이스북으로 공유합니다!');
 }
 
-// 인스타그램 DM 공유 (이미지 저장 후 인스타그램 앱으로 이동)
+// 인스타그램 DM 공유
 function shareInstagram() {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     if (isMobile) {
-        // 먼저 이미지를 저장하도록 안내
-        showToast('이미지를 저장 후 인스타그램 DM에서 공유하세요!');
-
-        // 이미지 저장 실행
-        setTimeout(() => {
-            saveAsImage();
-        }, 500);
-
-        // 인스타그램 앱 열기
-        setTimeout(() => {
-            window.location.href = 'instagram://direct-inbox';
-        }, 2000);
+        // 모바일: 인스타그램 앱 DM 열기
+        window.location.href = 'instagram://direct-inbox';
     } else {
-        // PC에서는 이미지 저장 안내
-        showToast('이미지를 저장 후 인스타그램에서 공유하세요!');
-        saveAsImage();
+        // PC: 인스타그램 웹 DM 페이지 열기
+        window.open('https://www.instagram.com/direct/inbox/', '_blank');
     }
+    showToast('인스타그램 DM으로 이동합니다!');
 }
 
 // 링크 복사
 function shareCopyLink() {
-    copyToClipboard(window.location.href);
+    copyToClipboard('https://bible-silk.vercel.app/');
 }
 
 // 클립보드 복사
